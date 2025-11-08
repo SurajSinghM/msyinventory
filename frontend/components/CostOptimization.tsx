@@ -1,5 +1,5 @@
 import { useLanguage } from './LanguageProvider'
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 
 interface CostOptimizationProps {
   inventory: any
@@ -44,26 +44,50 @@ export default function CostOptimization({ inventory }: CostOptimizationProps) {
       </div>
 
       {costData.length > 0 && (
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={costData}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-              outerRadius={80}
-              fill="#8884d8"
-              dataKey="value"
-            >
-              {costData.map((entry: any, index: number) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+        <>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={costData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {costData.map((entry: any, index: number) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+
+          {/* Color-coded table for pie chart data */}
+          <div className="overflow-x-auto mt-6">
+            <table className="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg">
+              <thead>
+                <tr className="bg-gray-100 dark:bg-gray-700">
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-gray-700 dark:text-gray-200">Color</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-gray-700 dark:text-gray-200">{language === 'en' ? 'Product' : '产品'}</th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold text-gray-700 dark:text-gray-200">%</th>
+                </tr>
+              </thead>
+              <tbody>
+                {costData.map((item: any, idx: number) => (
+                  <tr key={item.name} className="border-t border-gray-200 dark:border-gray-700">
+                    <td className="px-4 py-2">
+                      <span className="inline-block w-4 h-4 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }}></span>
+                    </td>
+                    <td className="px-4 py-2 font-medium text-black dark:text-white">{item.name}</td>
+                    <td className="px-4 py-2">{((item.value / totalCost) * 100).toFixed(1)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       <div className="mt-4">
