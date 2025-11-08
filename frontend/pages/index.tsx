@@ -61,7 +61,7 @@ export default function Landing() {
           <div className="flex justify-end gap-4 mb-8">
             <button
               onClick={toggleLanguage}
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-primary-gold to-yellow-400 text-primary-navy hover:from-yellow-400 hover:to-primary-gold transition shadow-md font-semibold border-2 border-primary-red"
+              className="px-4 py-2 rounded-lg bg-gradient-to-r from-primary-gold to-yellow-400 text-primary-navy dark:text-white hover:from-yellow-400 hover:to-primary-gold transition shadow-md font-semibold border-2 border-primary-red"
             >
               {language === 'en' ? '中文' : 'English'}
             </button>
@@ -104,7 +104,7 @@ export default function Landing() {
             ) : (
               <button
                 onClick={() => signIn('google')}
-                className="px-10 py-5 text-lg bg-gradient-to-r from-primary-red to-red-600 text-white rounded-xl hover:from-red-600 hover:to-primary-red transition-all shadow-2xl font-bold border-4 border-primary-gold hover:scale-105 flex items-center gap-3 mx-auto group"
+                className="px-10 py-5 text-lg bg-gradient-to-r from-primary-red to-red-600 text-black dark:text-white rounded-xl hover:from-red-600 hover:to-primary-red transition-all shadow-2xl font-bold border-4 border-primary-gold hover:scale-105 flex items-center gap-3 mx-auto group"
               >
                 <svg className="w-6 h-6" viewBox="0 0 24 24" width="24" height="24">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
