@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  python-service:
+    build:
+      context: ../python_service
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./data/msy_inventory.db
+      - PYTHON_SERVICE_HOST=0.0.0.0
+      - PYTHON_SERVICE_PORT=8000
+      - MODEL_PATH=./data/models/lstm_forecaster.pt
+    volumes:
+      - ../python_service/data:/app/data
+      - ../data:/app/data/external
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+    depends_on:
+      - python-service
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - frontend
+      - python-service
+    restart: unless-stopped
+

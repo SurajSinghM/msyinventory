@@ -1,0 +1,138 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║           MAI SHAN YUN INVENTORY INTELLIGENCE DASHBOARD              ║
+║                      How to Run - Simple Guide                       ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+📋 PREREQUISITES
+   ✅ Node.js 18+ (check: node --version)
+   ✅ Python 3.11+ (check: python3 --version)
+   ✅ npm (comes with Node.js)
+   ✅ pip (comes with Python)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 STEP 1: START THE BACKEND SERVER
+
+   Open Terminal 1:
+
+   cd python_service
+   ./run_server.sh
+
+   OR manually:
+   
+   cd python_service
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   python -m app.seed_data
+   uvicorn app.main:app --reload
+
+   ✅ You should see: "Uvicorn running on http://0.0.0.0:8000"
+   ✅ Keep this terminal open!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎨 STEP 2: START THE FRONTEND SERVER
+
+   Open Terminal 2 (new terminal window):
+
+   cd frontend
+   npm install
+   npm run dev
+
+   ✅ You should see: "Local: http://localhost:3000"
+   ✅ Keep this terminal open!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚙️  STEP 3: SET UP GOOGLE OAUTH (Required for Sign-In)
+
+   1. Go to: https://console.cloud.google.com/
+   2. Create a new project
+   3. Enable Google+ API
+   4. Create OAuth 2.0 Client ID
+   5. Add redirect URI: http://localhost:3000/api/auth/callback/google
+   6. Copy Client ID and Client Secret
+
+   Create file: frontend/.env.local
+   
+   NEXT_PUBLIC_API_URL=http://localhost:8000
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=your-secret-key-here
+   GOOGLE_CLIENT_ID=your-google-client-id
+   GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+   ✅ Replace with your actual Google OAuth credentials
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🌐 STEP 4: ACCESS THE DASHBOARD
+
+   Open your browser:
+   http://localhost:3000
+
+   ✅ You should see the landing page
+   ✅ Click "Sign in with Google"
+   ✅ Authorize the application
+   ✅ You'll be redirected to the dashboard!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ VERIFY EVERYTHING IS WORKING
+
+   Backend:
+   • http://localhost:8000 → Should show API message
+   • http://localhost:8000/docs → Should show API documentation
+   • http://localhost:8000/inventory/levels → Should return JSON data
+
+   Frontend:
+   • http://localhost:3000 → Should show landing page
+   • Theme toggle works (light/dark)
+   • Language toggle works (English/中文)
+   • After sign-in, dashboard loads with data
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🐛 TROUBLESHOOTING
+
+   Backend Issues:
+   • Port 8000 in use? → lsof -i :8000 → kill -9 <PID>
+   • Python version wrong? → python3 --version (needs 3.11+)
+   • Module errors? → pip install -r requirements.txt
+
+   Frontend Issues:
+   • Port 3000 in use? → lsof -i :3000 → kill -9 <PID>
+   • Node version wrong? → node --version (needs 18+)
+   • Module errors? → rm -rf node_modules && npm install
+   • .env.local missing? → Create it in frontend/ directory
+
+   Authentication Issues:
+   • Sign-in not working? → Check Google OAuth credentials
+   • Redirect URI mismatch? → Must match exactly
+   • NEXTAUTH_SECRET missing? → Add to .env.local
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 MORE HELP
+
+   • README.md → Full documentation
+   • HOW_TO_RUN.md → Detailed setup instructions
+   • RUN.md → Quick reference guide
+   • QUICKSTART.md → Quick start guide
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 THAT'S IT! You're ready to go!
+
+   The dashboard is now running at http://localhost:3000
+   
+   Features:
+   • Inventory tracking
+   • Demand forecasting
+   • Shipment tracking
+   • Cost optimization
+   • Bilingual support (English/中文)
+   • Light/Dark theme
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
