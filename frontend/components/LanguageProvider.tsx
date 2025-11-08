@@ -41,14 +41,17 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setMounted(true)
-    const savedLanguage = localStorage.getItem('language') as Language | null
-    if (savedLanguage) {
-      setLanguage(savedLanguage)
+    // Only access localStorage on client side
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem('language') as Language | null
+      if (savedLanguage) {
+        setLanguage(savedLanguage)
+      }
     }
   }, [])
 
   useEffect(() => {
-    if (mounted) {
+    if (mounted && typeof window !== 'undefined') {
       localStorage.setItem('language', language)
     }
   }, [language, mounted])
@@ -61,10 +64,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     return translations[language][key] || key
   }
 
-  if (!mounted) {
-    return <>{children}</>
-  }
-
+  // Always provide the context, even during SSR
+  // This prevents the "useLanguage must be used within a LanguageProvider" error
   return (
     <LanguageContext.Provider value={{ language, toggleLanguage, t }}>
       {children}

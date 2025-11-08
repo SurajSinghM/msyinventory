@@ -15,17 +15,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setMounted(true)
-    const savedTheme = localStorage.getItem('theme') as Theme | null
-    if (savedTheme) {
-      setTheme(savedTheme)
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      setTheme(prefersDark ? 'dark' : 'light')
+    // Only access localStorage on client side
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme') as Theme | null
+      if (savedTheme) {
+        setTheme(savedTheme)
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        setTheme(prefersDark ? 'dark' : 'light')
+      }
     }
   }, [])
 
   useEffect(() => {
-    if (mounted) {
+    if (mounted && typeof window !== 'undefined') {
       localStorage.setItem('theme', theme)
       if (theme === 'dark') {
         document.documentElement.classList.add('dark')
@@ -39,10 +42,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme(prev => prev === 'light' ? 'dark' : 'light')
   }
 
-  if (!mounted) {
-    return <>{children}</>
-  }
-
+  // Always provide the context, even during SSR
+  // This prevents the "useTheme must be used within a ThemeProvider" error
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
