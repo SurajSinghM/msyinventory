@@ -5,7 +5,19 @@ interface CostOptimizationProps {
   inventory: any
 }
 
-const COLORS = ['#E10600', '#FFC72C', '#00A878', '#0B2747', '#8B5CF6']
+const COLORS = ['#E10600', '#FFC72C', '#00A878', '#0B2747', '#FFF8F0']
+
+// Color mapping by product name
+const PRODUCT_COLORS: Record<string, string> = {
+  'Rice': '#E10600', // red
+  'Braised Chicken': '#FFC72C', // yellow
+  'Braised Beef': '#00A878', // green
+  'Braised Pork': '#0B2747', // blue
+  'Egg': '#FFF8F0', // white
+}
+
+// Fixed product order for color and display
+const PRODUCT_ORDER = ['Rice', 'Braised Chicken', 'Braised Beef', 'Braised Pork', 'Egg']
 
 export default function CostOptimization({ inventory }: CostOptimizationProps) {
   const { language } = useLanguage()
@@ -18,13 +30,18 @@ export default function CostOptimization({ inventory }: CostOptimizationProps) {
     )
   }
 
-  // Calculate cost distribution (simplified - would use actual cost data)
-  const costData = inventory.ingredients
-    .slice(0, 5)
-    .map((ing: any, index: number) => ({
-      name: ing.ingredient_name,
-      value: ing.current_stock * (10 + index * 2), // Simulated cost
-    }))
+  // Build costData in fixed product order
+  const costData = PRODUCT_ORDER
+    .map((prod) => {
+      const ing = inventory.ingredients.find((i: any) => i.ingredient_name === prod)
+      return ing
+        ? {
+            name: prod,
+            value: ing.current_stock * (10 + PRODUCT_ORDER.indexOf(prod) * 2), // Simulated cost
+          }
+        : null
+    })
+    .filter(Boolean)
 
   const totalCost = costData.reduce((sum: number, item: any) => sum + item.value, 0)
 
@@ -56,8 +73,8 @@ export default function CostOptimization({ inventory }: CostOptimizationProps) {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {costData.map((entry: any, index: number) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                {costData.map((entry: any) => (
+                  <Cell key={entry.name} fill={PRODUCT_COLORS[entry.name] || '#CCCCCC'} />
                 ))}
               </Pie>
               <Tooltip />
@@ -75,15 +92,19 @@ export default function CostOptimization({ inventory }: CostOptimizationProps) {
                 </tr>
               </thead>
               <tbody>
-                {costData.map((item: any, idx: number) => (
-                  <tr key={item.name} className="border-t border-gray-200 dark:border-gray-700">
-                    <td className="px-4 py-2">
-                      <span className="inline-block w-4 h-4 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }}></span>
-                    </td>
-                    <td className="px-4 py-2 font-medium text-black dark:text-white">{item.name}</td>
-                    <td className="px-4 py-2">{((item.value / totalCost) * 100).toFixed(1)}%</td>
-                  </tr>
-                ))}
+                {costData.map((item: any) => {
+                  const color = PRODUCT_COLORS[item.name] || '#CCCCCC';
+                  const percent = totalCost > 0 ? ((item.value / totalCost) * 100).toFixed(1) : '0.0';
+                  return (
+                    <tr key={item.name} className="border-t border-gray-200 dark:border-gray-700">
+                      <td className="px-4 py-2">
+                        <span className="inline-block w-4 h-4 rounded-full" style={{ backgroundColor: color }}></span>
+                      </td>
+                      <td className="px-4 py-2 font-medium text-black dark:text-white">{item.name}</td>
+                      <td className="px-4 py-2">{percent}%</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
